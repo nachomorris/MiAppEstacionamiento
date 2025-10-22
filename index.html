@@ -3,261 +3,265 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gestor de Estacionamiento — Local</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <title>Gestor de Estacionamiento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="wrap-bg">
-    <div class="container">
-      <!-- Topbar (sin tarifas) -->
-      <div class="topbar">
-        <h1 class="brand">Gestor de Estacionamiento</h1>
-      </div>
-
-      <!-- KPIs -->
-      <section class="kpi-row">
-        <div class="kpi-card">
-          <div class="kpi-head">
-            <h3 class="kpi-title">Espacios Totales</h3>
-            <span class="kpi-ico">🅿️</span>
-          </div>
-          <div class="kpi-value" id="kpiTotal">50</div>
-          <div class="kpi-sub">Capacidad máxima</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-head">
-            <h3 class="kpi-title">Ocupados</h3>
-            <span class="kpi-ico">↗️</span>
-          </div>
-          <div class="kpi-value" id="kpiBusy">0</div>
-          <div class="kpi-sub" id="kpiBusyPct">0% ocupación</div>
-        </div>
-
-        <div class="kpi-card kpi-available">
-          <div class="kpi-head">
-            <h3 class="kpi-title">Disponibles</h3>
-            <span class="kpi-ico">↙️</span>
-          </div>
-          <div class="kpi-value kpi-value-green" id="kpiFree">50</div>
-          <div class="kpi-sub">Espacios libres</div>
-        </div>
-      </section>
-
-      <!-- Form + Lista -->
-      <section class="grid">
-        <!-- Alta -->
-        <div class="card">
-          <h3 class="card-title">Ingreso de vehículo</h3>
-
-          <div class="field">
-            <label for="placa">Patente</label>
-            <input id="placa" type="text" placeholder="Ej: ABC123 / AB123CD" autocomplete="off">
-          </div>
-
-          <div class="grid-2">
+  <div class="wrap">
+    <!-- ===== Top: Ingreso + KPIs ===== -->
+    <header class="top">
+      <div class="ingreso-card card">
+        <h2>Ingreso de Vehículo</h2>
+        <form id="ingresoForm" autocomplete="off">
+          <div class="fields">
             <div class="field">
-              <label for="hora">Hora (auto)</label>
-              <input id="hora" type="text" readonly>
+              <label for="placa">Patente</label>
+              <input id="placa" type="text" placeholder="ABC123 / AA123BB" required />
+            </div>
+            <div class="field">
+              <label>Tipo</label>
+              <div class="segmented" id="tipoGrp">
+                <button type="button" class="seg active" data-tipo="auto">🚗 Auto</button>
+                <button type="button" class="seg" data-tipo="camioneta">🚐 Camioneta</button>
+                <button type="button" class="seg" data-tipo="moto">🏍️ Moto</button>
+              </div>
             </div>
             <div class="field">
               <label for="notas">Notas (opcional)</label>
-              <input id="notas" type="text" placeholder="Color, lugar, etc.">
+              <input id="notas" type="text" placeholder="Color, cochera, etc." />
             </div>
           </div>
+          <button class="btn-primary" id="btnEntrada" type="submit">Registrar Entrada</button>
+        </form>
+      </div>
 
-          <div class="vehicle-group">
-            <button class="vehicle-btn active" data-tipo="auto">🚗</button>
-            <button class="vehicle-btn" data-tipo="camioneta">🚐</button>
-            <button class="vehicle-btn" data-tipo="moto">🏍️</button>
+      <div class="kpis">
+        <div class="kpi card">
+          <div class="kpi-head">
+            <span class="kpi-title">Espacios Totales</span>
+            <span class="kpi-ico">🅿️</span>
           </div>
-
-          <button id="btnEntrada" class="btn-primary">Entrada</button>
+          <div class="kpi-val" id="kpiTotal">50</div>
+          <div class="kpi-sub">Capacidad máxima</div>
         </div>
 
-        <!-- Lista -->
-        <div class="card">
-          <div class="list-head">
-            <h3 class="card-title">Estacionados</h3>
-            <span class="badge" id="badgeCount">0</span>
+        <div class="kpi card">
+          <div class="kpi-head">
+            <span class="kpi-title">Ocupados</span>
+            <span class="kpi-ico">↗︎</span>
           </div>
-
-          <div class="search-row">
-            <input id="searchInput" type="text" placeholder="BUSCAR PATENTE">
-            <button id="clearFilter" class="btn-chip" style="display:none;">Borrar filtro</button>
-          </div>
-
-          <ul class="list" id="lista"></ul>
+          <div class="kpi-val" id="kpiOcupados">0</div>
+          <div class="kpi-sub" id="kpiOcupacion">0% ocupación</div>
         </div>
-      </section>
-    </div>
+
+        <div class="kpi card">
+          <div class="kpi-head">
+            <span class="kpi-title">Disponibles</span>
+            <span class="kpi-ico green">↙︎</span>
+          </div>
+          <div class="kpi-val green" id="kpiLibres">50</div>
+          <div class="kpi-sub">Espacios libres</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== Lista ===== -->
+    <main class="main card">
+      <div class="main-head">
+        <h1>Vehículos Estacionados</h1>
+        <div class="muted" id="countLabel">Mostrando 0 vehículos</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>Patente</th>
+            <th>Tipo</th>
+            <th>Hora de Entrada</th>
+            <th>Duración</th>
+            <th class="right">Acción</th>
+          </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </main>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <script>
+    // ===== Config =====
+    const CAPACIDAD_TOTAL = 50; // podés cambiarlo
 
-  <script type="module">
-    // ====== Estado Local ======
-    const KEY_CAPACITY = 'parking.capacity';
-    const KEY_DATA     = 'parking.estacionados';
+    // ===== Estado Local =====
+    const LS_KEY = 'parking_entries';
+    const $ = sel => document.querySelector(sel);
 
-    let capacity   = Number(localStorage.getItem(KEY_CAPACITY) || 50);
-    let items      = JSON.parse(localStorage.getItem(KEY_DATA) || '[]'); // [{id, placa, tipo, notas, entradaISO}]
-    let tipoSel    = 'auto';
+    let entries = loadEntries(); // [{id, placa, tipo, notas, entradaISO}]
 
-    // ====== Refs ======
-    const $ = (id) => document.getElementById(id);
-    const placaEl = $('placa');
-    const notasEl = $('notas');
-    const horaEl  = $('hora');
-    const btn     = $('btnEntrada');
-    const listaEl = $('lista');
-    const badgeEl = $('badgeCount');
-    const search  = $('searchInput');
-    const clearF  = $('clearFilter');
+    // ===== UI refs =====
+    const form = $('#ingresoForm');
+    const placaInput = $('#placa');
+    const notasInput = $('#notas');
+    const tipoGrp = $('#tipoGrp');
+    const tbody = $('#tbody');
 
-    const kpiTotal = $('kpiTotal');
-    const kpiBusy  = $('kpiBusy');
-    const kpiFree  = $('kpiFree');
-    const kpiPct   = $('kpiBusyPct');
+    const kpiTotal = $('#kpiTotal');
+    const kpiOcupados = $('#kpiOcupados');
+    const kpiLibres = $('#kpiLibres');
+    const kpiOcupacion = $('#kpiOcupacion');
+    const countLabel = $('#countLabel');
 
-    // ====== UI helpers ======
-    function toast(msg){
-      const t = $('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(()=> t.classList.remove('show'), 1800);
+    // set KPIs base
+    kpiTotal.textContent = CAPACIDAD_TOTAL;
+
+    // ===== Helpers =====
+    function loadEntries(){
+      try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+      catch { return []; }
     }
-    function nowText(){
-      return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit', hour12:false});
+    function saveEntries(){
+      localStorage.setItem(LS_KEY, JSON.stringify(entries));
     }
-    function updateClock(){
-      horaEl.value = nowText();
-    }
-    setInterval(updateClock, 60_000);
-    updateClock();
+    function uid(){ return Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(4); }
 
-    // ====== Persistencia ======
-    function save(){
-      localStorage.setItem(KEY_CAPACITY, String(capacity));
-      localStorage.setItem(KEY_DATA, JSON.stringify(items));
+    function selectedTipo(){
+      const btn = tipoGrp.querySelector('.seg.active');
+      return btn ? btn.dataset.tipo : 'auto';
     }
 
-    // ====== KPIs ======
-    function renderKpis(){
-      const busy = items.length;
-      const free = Math.max(0, capacity - busy);
-      const pct  = capacity ? Math.round((busy / capacity)*100) : 0;
-
-      kpiTotal.textContent = capacity;
-      kpiBusy.textContent  = busy;
-      kpiFree.textContent  = free;
-      kpiPct.textContent   = `${pct}% ocupación`;
-      badgeEl.textContent  = busy;
+    function setTipo(tipo){
+      tipoGrp.querySelectorAll('.seg').forEach(b => b.classList.toggle('active', b.dataset.tipo===tipo));
     }
 
-    // ====== Lista ======
-    function renderList(){
-      const term = (search.value || '').trim().toUpperCase();
-      const data = term ? items.filter(v => (v.placa||'').toUpperCase().includes(term)) : items;
+    function formatDate(dt){
+      return dt.toLocaleString([], { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+    function formatHM(min){
+      const h = Math.floor(min/60), m = min%60;
+      if(h && m) return `${h} minutos`.replace('minutos', 'h') + ` ${m} min`.replace('h', ' h');
+      if(h) return `${h} h`;
+      if(m<=0) return 'menos de un minuto';
+      return `${m} minutos`.replace('minutos','min');
+    }
+    function minutesSince(iso){
+      const d = new Date(iso);
+      const now = new Date();
+      return Math.max(0, Math.floor((now - d)/60000));
+    }
 
-      listaEl.innerHTML = '';
-      data.forEach(v=>{
-        const li = document.createElement('li');
+    // ===== Render =====
+    function render(){
+      // tabla
+      tbody.innerHTML = '';
+      const sorted = [...entries].sort((a,b)=> (new Date(b.entradaISO)) - (new Date(a.entradaISO)));
 
-        const left = document.createElement('div');
-        left.className = 'item-left';
-        const emoji = v.tipo==='camioneta' ? '🚐' : (v.tipo==='moto' ? '🏍️' : '🚗');
+      sorted.forEach(e => {
+        const tr = document.createElement('tr');
 
-        const plate = document.createElement('div');
-        plate.className = 'plate';
-        plate.textContent = `${emoji} ${v.placa}`;
+        // patente
+        const tdPlaca = document.createElement('td');
+        tdPlaca.textContent = e.placa;
 
-        const time = document.createElement('div');
-        time.className = 'time';
-        time.textContent = new Date(v.entradaISO).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        // tipo badge
+        const tdTipo = document.createElement('td');
+        const badge = document.createElement('span');
+        badge.className = `badge ${e.tipo}`;
+        badge.textContent = (e.tipo==='camioneta'?'Camioneta': e.tipo==='moto'?'Moto':'Auto');
+        tdTipo.appendChild(badge);
 
-        left.appendChild(plate);
-        left.appendChild(time);
-        if (v.notas){
-          const n = document.createElement('div');
-          n.className = 'note';
-          n.textContent = v.notas;
-          left.appendChild(n);
-        }
+        // entrada
+        const tdEntrada = document.createElement('td');
+        tdEntrada.textContent = formatDate(new Date(e.entradaISO));
 
-        const del = document.createElement('button');
-        del.className = 'delete-btn';
-        del.textContent = 'SALIDA';
-        del.addEventListener('click', ()=>{
-          items = items.filter(x => x.id !== v.id);
-          save();
-          renderKpis();
-          renderList();
-          toast('Salida confirmada');
-        });
+        // duración (dinámica)
+        const tdDur = document.createElement('td');
+        const updateDur = () => {
+          const m = minutesSince(e.entradaISO);
+          tdDur.textContent = formatHM(m);
+        };
+        updateDur();
+        tr._updateDur = updateDur; // guardo para el refresco global
 
-        li.appendChild(left);
-        li.appendChild(del);
-        listaEl.appendChild(li);
+        // acción
+        const tdAcc = document.createElement('td');
+        tdAcc.className = 'right';
+        const btn = document.createElement('button');
+        btn.className = 'btn-dark';
+        btn.textContent = 'Registrar Salida';
+        btn.addEventListener('click', () => removeEntry(e.id));
+        tdAcc.appendChild(btn);
+
+        tr.append(tdPlaca, tdTipo, tdEntrada, tdDur, tdAcc);
+        tbody.appendChild(tr);
       });
+
+      // KPIs
+      const ocup = entries.length;
+      const libres = Math.max(0, CAPACIDAD_TOTAL - ocup);
+      const ocupPercent = CAPACIDAD_TOTAL ? Math.round(ocup*100/CAPACIDAD_TOTAL) : 0;
+
+      kpiOcupados.textContent = ocup;
+      kpiLibres.textContent = libres;
+      kpiOcupacion.textContent = `${ocupPercent}% ocupación`;
+
+      countLabel.textContent = `Mostrando ${entries.length} vehículo${entries.length===1?'':'s'}`;
     }
 
-    // ====== Filtro ======
-    function toggleClear(){
-      clearF.style.display = (search.value || '').trim().length ? 'inline-flex' : 'none';
-    }
-    search.addEventListener('input', ()=>{ toggleClear(); renderList(); });
-    clearF.addEventListener('click', ()=>{ search.value=''; toggleClear(); renderList(); });
-    toggleClear();
+    // refresco de duraciones cada 30s
+    setInterval(() => {
+      tbody.querySelectorAll('tr').forEach(tr => tr._updateDur && tr._updateDur());
+    }, 30000);
 
-    // ====== Tipo seleccionado ======
-    document.querySelectorAll('.vehicle-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.vehicle-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        tipoSel = btn.dataset.tipo;
-      });
+    // ===== Eventos =====
+    // toggle tipo
+    tipoGrp.addEventListener('click', (e) => {
+      const btn = e.target.closest('.seg');
+      if(!btn) return;
+      setTipo(btn.dataset.tipo);
     });
 
-    // ====== Entrada ======
-    function addEntrada(){
-      const placa = (placaEl.value || '').trim().toUpperCase();
-      if (!placa){ toast('Ingresá la patente'); placaEl.focus(); return; }
+    // submit
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const placa = (placaInput.value || '').trim().toUpperCase();
+      if(!placa){ placaInput.focus(); return; }
 
-      if (items.length >= capacity){
-        toast('Capacidad completa');
-        return;
-      }
-
-      const id = crypto.randomUUID();
-      items.unshift({
-        id,
+      const entry = {
+        id: uid(),
         placa,
-        tipo: tipoSel,
-        notas: (notasEl.value || '').trim(),
+        tipo: selectedTipo(),
+        notas: (notasInput.value||'').trim(),
         entradaISO: new Date().toISOString()
-      });
-      save();
-      renderKpis();
-      renderList();
+      };
+      entries.push(entry);
+      saveEntries();
+      render();
 
-      // reset UI + volver a auto
-      placaEl.value=''; notasEl.value='';
-      document.querySelectorAll('.vehicle-btn').forEach(b=>b.classList.remove('active'));
-      document.querySelector('.vehicle-btn[data-tipo="auto"]').classList.add('active');
-      tipoSel = 'auto';
+      // reset UI (vuelve a Auto)
+      form.reset();
+      setTipo('auto');
+      placaInput.focus();
+    });
 
-      placaEl.focus();
-      toast('Vehículo ingresado');
+    // Enter en patente también registra
+    placaInput.addEventListener('keypress', (e)=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        $('#btnEntrada').click();
+      }
+    });
+
+    function removeEntry(id){
+      entries = entries.filter(x => x.id !== id);
+      saveEntries();
+      render();
     }
-    btn.addEventListener('click', (e)=>{ e.preventDefault(); addEntrada(); });
-    placaEl.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); addEntrada(); } });
 
-    // ====== Init ======
-    renderKpis();
-    renderList();
+    // ===== Init =====
+    setTipo('auto');
+    render();
   </script>
 </body>
 </html>
