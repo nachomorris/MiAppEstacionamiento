@@ -1,170 +1,171 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parking — Nueva UI</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div class="wrap-bg">
-    <div class="container">
-      <!-- Barra superior -->
-      <header class="topbar">
-        <h1 class="brand">Parking</h1>
-        <div class="top-actions">
-          <span class="pill-info">
-            <strong>Tarifas:</strong> Auto $1800 · Camioneta $2000 · Moto $1300
-          </span>
-        </div>
-      </header>
+/* ========= Variables / base ========= */
+:root{
+  --bg-start: #f1f2f4;
+  --bg-end:   #f1f2f4;
 
-      <!-- ===== KPI ROW ===== -->
-      <section class="kpi-row">
-        <!-- Espacios Totales -->
-        <article class="kpi-card">
-          <div class="kpi-head">
-            <h3 class="kpi-title">Espacios Totales</h3>
-            <!-- icono cuadrado con "P" -->
-            <span class="kpi-ico" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" fill="none" stroke="#222" stroke-width="1.6"/>
-                <path d="M9 16V8h4.2a3 3 0 1 1 0 6H11" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </div>
-          <div class="kpi-value" id="kpiTotalSpaces">50</div>
-          <div class="kpi-sub">Capacidad máxima</div>
-        </article>
+  --card-bg: #fff;
+  --card-shadow: 0 6px 18px rgba(0,0,0,.06);
 
-        <!-- Ocupados -->
-        <article class="kpi-card">
-          <div class="kpi-head">
-            <h3 class="kpi-title">Ocupados</h3>
-            <!-- flecha ↗ -->
-            <span class="kpi-ico" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24">
-                <path d="M7 17L17 7M9 7h8v8" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </div>
-          <div class="kpi-value" id="kpiOccupied">0</div>
-          <div class="kpi-sub"><span id="kpiOccPct">0%</span> ocupación</div>
-        </article>
+  --text-1: #0e0e0e;
+  --text-2: #4a4a4a;
+  --muted:  #8a8a8a;
 
-        <!-- Disponibles -->
-        <article class="kpi-card kpi-available">
-          <div class="kpi-head">
-            <h3 class="kpi-title">Disponibles</h3>
-            <!-- flecha ↙ en verde -->
-            <span class="kpi-ico" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24">
-                <path d="M17 7L7 17M15 17H7V9" fill="none" stroke="#41a46a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </div>
-          <div class="kpi-value kpi-value-green" id="kpiAvailable">50</div>
-          <div class="kpi-sub">Espacios libres</div>
-        </article>
-      </section>
-      <!-- ===== /KPI ROW ===== -->
+  /* Paleta azul elegante */
+  --accent:   #1e3a8a;             /* azul marino */
+  --accent-2: #3b82f6;             /* azul moderno */
+  --accent-3: rgba(30,58,138,.18); /* focus ring */
 
-      <!-- Layout principal -->
-      <main class="grid">
-        <!-- Panel ingreso -->
-        <section class="card form-card">
-          <h2 class="card-title">Ingreso de vehículo</h2>
+  --green: #41a46a;
 
-          <div class="field">
-            <label for="placa">Patente</label>
-            <input id="placa" type="text" placeholder="ABC123 / AA000BB" list="placaSuggestions" autocomplete="off" />
-            <datalist id="placaSuggestions"></datalist>
-          </div>
+  --border: #e6eaef;
+  --badge-bg: rgba(30,58,138,.08);
+  --badge-tx: #1e3a8a;
 
-          <div class="grid-2">
-            <div class="field">
-              <label for="entryTime">Hora</label>
-              <input id="entryTime" type="text" value="" readonly />
-            </div>
-            <div class="field">
-              <label for="notas">Notas</label>
-              <input id="notas" type="text" placeholder="Observaciones…" />
-            </div>
-          </div>
+  --danger:#e74c3c; --danger-h:#c0392b;
+}
 
-          <div class="vehicle-group">
-            <button class="vehicle-btn active" data-tipo="auto" id="autoBtn" title="Auto">🚗</button>
-            <button class="vehicle-btn" data-tipo="camioneta" id="camionetaBtn" title="Camioneta">🚐</button>
-            <button class="vehicle-btn" data-tipo="moto" id="motoBtn" title="Moto">🏍️</button>
-          </div>
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text-1);
+}
 
-          <button id="btn-entrada" class="btn-primary">Entrada</button>
-        </section>
+/* ========= Fondo / contenedor ========= */
+.wrap-bg{
+  min-height:100%;
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+  display:flex; align-items:center; justify-content:center;
+  padding: 18px;
+}
+.container{
+  width:100%; max-width:1280px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  overflow:hidden;
+}
 
-        <!-- Panel listado -->
-        <section class="card list-card">
-          <div class="list-head">
-            <h2 class="card-title">Estacionados</h2>
-            <span class="badge" id="count">0</span>
-          </div>
+/* ========= Topbar ========= */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding: 16px 18px;
+  background:#fff; border-bottom: 1px solid var(--border);
+}
+.brand{ font-size: 18px; font-weight:800; margin:0; }
 
-          <div class="search-row">
-            <input id="searchInput" type="text" placeholder="Buscar patente…" />
-            <button id="clearFilterBtn" class="btn-chip" style="display:none;">Borrar filtro</button>
-          </div>
+/* ========= KPI Row ========= */
+.kpi-row{
+  display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  padding: 16px 18px;
+  background: #f1f2f4;
+}
+.kpi-card{
+  background:#fff; border: 1px solid var(--border);
+  border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,.05);
+  padding: 22px; display:flex; flex-direction:column; gap: 8px;
+}
+.kpi-head{ display:flex; align-items:center; justify-content:space-between; }
+.kpi-title{ margin:0; font-size: 18px; font-weight: 700; color:#1c1c1c; }
+.kpi-ico{ opacity:.9; }
+.kpi-value{
+  font-size: 36px;            /* 👈 más pequeño */
+  font-weight: 800; line-height: 1; color:#000;
+}
+.kpi-value-green{ color: var(--green); }
+.kpi-sub{ font-size: 14px; color:#333; margin-top: 4px; }
 
-          <ul id="listaEstacionados" class="list"></ul>
-        </section>
-      </main>
-    </div>
-  </div>
+.kpi-card.kpi-available .kpi-sub{ color:#3b6f52; }
 
-  <!-- Modal salida -->
-  <div id="exitModal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-      <button class="modal-close" id="closeModal" aria-label="Cerrar">×</button>
-      <h3 id="exitTitle" class="modal-title"></h3>
-      <p id="exitInfo" class="modal-info"></p>
-      <p class="modal-amount" id="exitAmount"></p>
+@media (max-width: 980px){
+  .kpi-row{ grid-template-columns: 1fr; }
+}
 
-      <div class="field">
-        <label for="paymentInput">Monto pagado</label>
-        <input id="paymentInput" type="number" placeholder="$" inputmode="numeric" />
-      </div>
-      <p class="modal-change" id="changeOutput">Vuelto: $0</p>
+/* ========= Grid principal ========= */
+.grid{
+  display:grid; grid-template-columns: 1.2fr 1.8fr; gap: 16px;
+  padding: 16px 18px 20px;
+}
+@media (max-width: 980px){
+  .grid{ grid-template-columns: 1fr; }
+}
 
-      <div class="modal-actions">
-        <button id="confirmButton" class="btn-primary">Confirmar salida</button>
-      </div>
-    </div>
-  </div>
+/* ========= Cards / formulario / lista ========= */
+.card{
+  background:#fff; border:1px solid var(--border);
+  border-radius: 14px; padding: 14px;
+}
+.card-title{
+  margin:0 0 10px 0; font-size: 14px; letter-spacing:.02em;
+  text-transform:uppercase; color:#1c1c1c;
+}
 
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
+.field{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+.field label{ font-size:.92rem; color: var(--text-2); }
+.field input{
+  border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 12px; font-size: 1rem; color:#111; background:#fff;
+}
+.field input::placeholder{ color: var(--muted); }
+.field input:focus{
+  outline:none; border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-3);
+}
 
-  <!-- Ganchos simples para que se actualicen los KPIs con tu JS actual -->
-  <script>
-    // Cambiá esto a tu capacidad real
-    const TOTAL_SPACES = 50;
+.grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px){ .grid-2{ grid-template-columns: 1fr; } }
 
-    // Set inicial al cargar (por si no tenés JS aún)
-    document.getElementById('kpiTotalSpaces').textContent = TOTAL_SPACES;
+.vehicle-group{ display:flex; gap:10px; margin: 10px 0 14px; }
+.vehicle-btn{
+  flex:1; padding:10px 0; border:1.5px solid var(--border); border-radius:12px;
+  background:transparent; font-size:22px; cursor:pointer; transition:.2s ease;
+}
+.vehicle-btn:hover{ border-color: var(--accent); background: rgba(30,58,138,.08); }
+.vehicle-btn.active{ border-color: var(--accent); box-shadow: 0 8px 20px rgba(30,58,138,.2); }
 
-    // Esta función la podés llamar desde tu render() actual pasando el total ocupados
-    window.updateKPI = function(occupied){
-      const available = Math.max(0, TOTAL_SPACES - (occupied||0));
-      const pct = TOTAL_SPACES ? Math.round((occupied / TOTAL_SPACES) * 100) : 0;
+.btn-primary{
+  width:100%; padding:12px 14px; border:none; border-radius:12px;
+  background: var(--accent); color:#fff; font-weight:700; font-size:1rem;
+  cursor:pointer; transition:.2s ease;
+}
+.btn-primary:hover{ background: var(--accent-2); }
 
-      document.getElementById('kpiOccupied').textContent   = occupied || 0;
-      document.getElementById('kpiAvailable').textContent  = available;
-      document.getElementById('kpiOccPct').textContent     = pct + '%';
-      document.getElementById('count').textContent         = occupied || 0; // badge lista
-    };
-  </script>
-  <!-- Conectá tu lógica cuando quieras:
-       <script type="module" src="./firebase.js"></script>
-       <script type="module" src="./app.js"></script>
-  -->
-</body>
-</html>
+.list-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+.badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:32px; padding:6px 10px; border-radius:999px;
+  background: var(--badge-bg); color: var(--badge-tx); font-weight:700;
+}
+
+.search-row{ display:flex; gap:8px; margin-bottom:12px; }
+#searchInput{
+  flex:1; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:1rem;
+}
+#searchInput:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-3); }
+.btn-chip{ padding:10px 12px; border-radius:999px; border:none; background:#3b82f6; color:#fff; font-weight:700; cursor:pointer; }
+.btn-chip:hover{ background:#2563eb; }
+
+.list{ list-style:none; margin:0; padding:0 0 60px 0; display:flex; flex-direction:column; gap:10px; }
+.list li{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px; border:1px solid var(--border); border-left:4px solid var(--accent);
+  background:#fff; border-radius:12px;
+}
+.item-left{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+.plate{ font-weight:700; font-size:1.15rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.time{ color: var(--text-2); font-size:.95rem; }
+.note{ color: var(--danger); font-size:.9rem; word-break:break-word; }
+
+.delete-btn{
+  padding:8px 12px; border-radius:10px; border:none; background: var(--danger); color:#fff; font-weight:700; cursor:pointer;
+}
+.delete-btn:hover{ background: var(--danger-h); }
+
+/* ========= Toast ========= */
+.toast{
+  position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+  min-width:220px; padding:10px 12px; background:rgba(20,20,20,.9); color:#fff;
+  border-radius:12px; text-align:center; font-size:.95rem; visibility:hidden; opacity:0; transition:opacity .25s ease; z-index:10;
+}
+.toast.show{ visibility:visible; opacity:1; }
