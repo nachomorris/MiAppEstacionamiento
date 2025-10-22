@@ -1,171 +1,263 @@
-/* ========= Variables / base ========= */
-:root{
-  --bg-start: #f1f2f4;
-  --bg-end:   #f1f2f4;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestor de Estacionamiento — Local</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap-bg">
+    <div class="container">
+      <!-- Topbar (sin tarifas) -->
+      <div class="topbar">
+        <h1 class="brand">Gestor de Estacionamiento</h1>
+      </div>
 
-  --card-bg: #fff;
-  --card-shadow: 0 6px 18px rgba(0,0,0,.06);
+      <!-- KPIs -->
+      <section class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <h3 class="kpi-title">Espacios Totales</h3>
+            <span class="kpi-ico">🅿️</span>
+          </div>
+          <div class="kpi-value" id="kpiTotal">50</div>
+          <div class="kpi-sub">Capacidad máxima</div>
+        </div>
 
-  --text-1: #0e0e0e;
-  --text-2: #4a4a4a;
-  --muted:  #8a8a8a;
+        <div class="kpi-card">
+          <div class="kpi-head">
+            <h3 class="kpi-title">Ocupados</h3>
+            <span class="kpi-ico">↗️</span>
+          </div>
+          <div class="kpi-value" id="kpiBusy">0</div>
+          <div class="kpi-sub" id="kpiBusyPct">0% ocupación</div>
+        </div>
 
-  /* Paleta azul elegante */
-  --accent:   #1e3a8a;             /* azul marino */
-  --accent-2: #3b82f6;             /* azul moderno */
-  --accent-3: rgba(30,58,138,.18); /* focus ring */
+        <div class="kpi-card kpi-available">
+          <div class="kpi-head">
+            <h3 class="kpi-title">Disponibles</h3>
+            <span class="kpi-ico">↙️</span>
+          </div>
+          <div class="kpi-value kpi-value-green" id="kpiFree">50</div>
+          <div class="kpi-sub">Espacios libres</div>
+        </div>
+      </section>
 
-  --green: #41a46a;
+      <!-- Form + Lista -->
+      <section class="grid">
+        <!-- Alta -->
+        <div class="card">
+          <h3 class="card-title">Ingreso de vehículo</h3>
 
-  --border: #e6eaef;
-  --badge-bg: rgba(30,58,138,.08);
-  --badge-tx: #1e3a8a;
+          <div class="field">
+            <label for="placa">Patente</label>
+            <input id="placa" type="text" placeholder="Ej: ABC123 / AB123CD" autocomplete="off">
+          </div>
 
-  --danger:#e74c3c; --danger-h:#c0392b;
-}
+          <div class="grid-2">
+            <div class="field">
+              <label for="hora">Hora (auto)</label>
+              <input id="hora" type="text" readonly>
+            </div>
+            <div class="field">
+              <label for="notas">Notas (opcional)</label>
+              <input id="notas" type="text" placeholder="Color, lugar, etc.">
+            </div>
+          </div>
 
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-  margin:0;
-  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--text-1);
-}
+          <div class="vehicle-group">
+            <button class="vehicle-btn active" data-tipo="auto">🚗</button>
+            <button class="vehicle-btn" data-tipo="camioneta">🚐</button>
+            <button class="vehicle-btn" data-tipo="moto">🏍️</button>
+          </div>
 
-/* ========= Fondo / contenedor ========= */
-.wrap-bg{
-  min-height:100%;
-  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
-  display:flex; align-items:center; justify-content:center;
-  padding: 18px;
-}
-.container{
-  width:100%; max-width:1280px;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: var(--card-shadow);
-  overflow:hidden;
-}
+          <button id="btnEntrada" class="btn-primary">Entrada</button>
+        </div>
 
-/* ========= Topbar ========= */
-.topbar{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:12px; padding: 16px 18px;
-  background:#fff; border-bottom: 1px solid var(--border);
-}
-.brand{ font-size: 18px; font-weight:800; margin:0; }
+        <!-- Lista -->
+        <div class="card">
+          <div class="list-head">
+            <h3 class="card-title">Estacionados</h3>
+            <span class="badge" id="badgeCount">0</span>
+          </div>
 
-/* ========= KPI Row ========= */
-.kpi-row{
-  display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-  padding: 16px 18px;
-  background: #f1f2f4;
-}
-.kpi-card{
-  background:#fff; border: 1px solid var(--border);
-  border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,.05);
-  padding: 22px; display:flex; flex-direction:column; gap: 8px;
-}
-.kpi-head{ display:flex; align-items:center; justify-content:space-between; }
-.kpi-title{ margin:0; font-size: 18px; font-weight: 700; color:#1c1c1c; }
-.kpi-ico{ opacity:.9; }
-.kpi-value{
-  font-size: 36px;            /* 👈 más pequeño */
-  font-weight: 800; line-height: 1; color:#000;
-}
-.kpi-value-green{ color: var(--green); }
-.kpi-sub{ font-size: 14px; color:#333; margin-top: 4px; }
+          <div class="search-row">
+            <input id="searchInput" type="text" placeholder="BUSCAR PATENTE">
+            <button id="clearFilter" class="btn-chip" style="display:none;">Borrar filtro</button>
+          </div>
 
-.kpi-card.kpi-available .kpi-sub{ color:#3b6f52; }
+          <ul class="list" id="lista"></ul>
+        </div>
+      </section>
+    </div>
+  </div>
 
-@media (max-width: 980px){
-  .kpi-row{ grid-template-columns: 1fr; }
-}
+  <div id="toast" class="toast"></div>
 
-/* ========= Grid principal ========= */
-.grid{
-  display:grid; grid-template-columns: 1.2fr 1.8fr; gap: 16px;
-  padding: 16px 18px 20px;
-}
-@media (max-width: 980px){
-  .grid{ grid-template-columns: 1fr; }
-}
+  <script type="module">
+    // ====== Estado Local ======
+    const KEY_CAPACITY = 'parking.capacity';
+    const KEY_DATA     = 'parking.estacionados';
 
-/* ========= Cards / formulario / lista ========= */
-.card{
-  background:#fff; border:1px solid var(--border);
-  border-radius: 14px; padding: 14px;
-}
-.card-title{
-  margin:0 0 10px 0; font-size: 14px; letter-spacing:.02em;
-  text-transform:uppercase; color:#1c1c1c;
-}
+    let capacity   = Number(localStorage.getItem(KEY_CAPACITY) || 50);
+    let items      = JSON.parse(localStorage.getItem(KEY_DATA) || '[]'); // [{id, placa, tipo, notas, entradaISO}]
+    let tipoSel    = 'auto';
 
-.field{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
-.field label{ font-size:.92rem; color: var(--text-2); }
-.field input{
-  border: 1.5px solid var(--border); border-radius: 12px;
-  padding: 12px; font-size: 1rem; color:#111; background:#fff;
-}
-.field input::placeholder{ color: var(--muted); }
-.field input:focus{
-  outline:none; border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-3);
-}
+    // ====== Refs ======
+    const $ = (id) => document.getElementById(id);
+    const placaEl = $('placa');
+    const notasEl = $('notas');
+    const horaEl  = $('hora');
+    const btn     = $('btnEntrada');
+    const listaEl = $('lista');
+    const badgeEl = $('badgeCount');
+    const search  = $('searchInput');
+    const clearF  = $('clearFilter');
 
-.grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 560px){ .grid-2{ grid-template-columns: 1fr; } }
+    const kpiTotal = $('kpiTotal');
+    const kpiBusy  = $('kpiBusy');
+    const kpiFree  = $('kpiFree');
+    const kpiPct   = $('kpiBusyPct');
 
-.vehicle-group{ display:flex; gap:10px; margin: 10px 0 14px; }
-.vehicle-btn{
-  flex:1; padding:10px 0; border:1.5px solid var(--border); border-radius:12px;
-  background:transparent; font-size:22px; cursor:pointer; transition:.2s ease;
-}
-.vehicle-btn:hover{ border-color: var(--accent); background: rgba(30,58,138,.08); }
-.vehicle-btn.active{ border-color: var(--accent); box-shadow: 0 8px 20px rgba(30,58,138,.2); }
+    // ====== UI helpers ======
+    function toast(msg){
+      const t = $('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(()=> t.classList.remove('show'), 1800);
+    }
+    function nowText(){
+      return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit', hour12:false});
+    }
+    function updateClock(){
+      horaEl.value = nowText();
+    }
+    setInterval(updateClock, 60_000);
+    updateClock();
 
-.btn-primary{
-  width:100%; padding:12px 14px; border:none; border-radius:12px;
-  background: var(--accent); color:#fff; font-weight:700; font-size:1rem;
-  cursor:pointer; transition:.2s ease;
-}
-.btn-primary:hover{ background: var(--accent-2); }
+    // ====== Persistencia ======
+    function save(){
+      localStorage.setItem(KEY_CAPACITY, String(capacity));
+      localStorage.setItem(KEY_DATA, JSON.stringify(items));
+    }
 
-.list-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
-.badge{
-  display:inline-flex; align-items:center; justify-content:center;
-  min-width:32px; padding:6px 10px; border-radius:999px;
-  background: var(--badge-bg); color: var(--badge-tx); font-weight:700;
-}
+    // ====== KPIs ======
+    function renderKpis(){
+      const busy = items.length;
+      const free = Math.max(0, capacity - busy);
+      const pct  = capacity ? Math.round((busy / capacity)*100) : 0;
 
-.search-row{ display:flex; gap:8px; margin-bottom:12px; }
-#searchInput{
-  flex:1; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:1rem;
-}
-#searchInput:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-3); }
-.btn-chip{ padding:10px 12px; border-radius:999px; border:none; background:#3b82f6; color:#fff; font-weight:700; cursor:pointer; }
-.btn-chip:hover{ background:#2563eb; }
+      kpiTotal.textContent = capacity;
+      kpiBusy.textContent  = busy;
+      kpiFree.textContent  = free;
+      kpiPct.textContent   = `${pct}% ocupación`;
+      badgeEl.textContent  = busy;
+    }
 
-.list{ list-style:none; margin:0; padding:0 0 60px 0; display:flex; flex-direction:column; gap:10px; }
-.list li{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:12px; border:1px solid var(--border); border-left:4px solid var(--accent);
-  background:#fff; border-radius:12px;
-}
-.item-left{ display:flex; flex-direction:column; gap:4px; min-width:0; }
-.plate{ font-weight:700; font-size:1.15rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.time{ color: var(--text-2); font-size:.95rem; }
-.note{ color: var(--danger); font-size:.9rem; word-break:break-word; }
+    // ====== Lista ======
+    function renderList(){
+      const term = (search.value || '').trim().toUpperCase();
+      const data = term ? items.filter(v => (v.placa||'').toUpperCase().includes(term)) : items;
 
-.delete-btn{
-  padding:8px 12px; border-radius:10px; border:none; background: var(--danger); color:#fff; font-weight:700; cursor:pointer;
-}
-.delete-btn:hover{ background: var(--danger-h); }
+      listaEl.innerHTML = '';
+      data.forEach(v=>{
+        const li = document.createElement('li');
 
-/* ========= Toast ========= */
-.toast{
-  position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
-  min-width:220px; padding:10px 12px; background:rgba(20,20,20,.9); color:#fff;
-  border-radius:12px; text-align:center; font-size:.95rem; visibility:hidden; opacity:0; transition:opacity .25s ease; z-index:10;
-}
-.toast.show{ visibility:visible; opacity:1; }
+        const left = document.createElement('div');
+        left.className = 'item-left';
+        const emoji = v.tipo==='camioneta' ? '🚐' : (v.tipo==='moto' ? '🏍️' : '🚗');
+
+        const plate = document.createElement('div');
+        plate.className = 'plate';
+        plate.textContent = `${emoji} ${v.placa}`;
+
+        const time = document.createElement('div');
+        time.className = 'time';
+        time.textContent = new Date(v.entradaISO).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+        left.appendChild(plate);
+        left.appendChild(time);
+        if (v.notas){
+          const n = document.createElement('div');
+          n.className = 'note';
+          n.textContent = v.notas;
+          left.appendChild(n);
+        }
+
+        const del = document.createElement('button');
+        del.className = 'delete-btn';
+        del.textContent = 'SALIDA';
+        del.addEventListener('click', ()=>{
+          items = items.filter(x => x.id !== v.id);
+          save();
+          renderKpis();
+          renderList();
+          toast('Salida confirmada');
+        });
+
+        li.appendChild(left);
+        li.appendChild(del);
+        listaEl.appendChild(li);
+      });
+    }
+
+    // ====== Filtro ======
+    function toggleClear(){
+      clearF.style.display = (search.value || '').trim().length ? 'inline-flex' : 'none';
+    }
+    search.addEventListener('input', ()=>{ toggleClear(); renderList(); });
+    clearF.addEventListener('click', ()=>{ search.value=''; toggleClear(); renderList(); });
+    toggleClear();
+
+    // ====== Tipo seleccionado ======
+    document.querySelectorAll('.vehicle-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.vehicle-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        tipoSel = btn.dataset.tipo;
+      });
+    });
+
+    // ====== Entrada ======
+    function addEntrada(){
+      const placa = (placaEl.value || '').trim().toUpperCase();
+      if (!placa){ toast('Ingresá la patente'); placaEl.focus(); return; }
+
+      if (items.length >= capacity){
+        toast('Capacidad completa');
+        return;
+      }
+
+      const id = crypto.randomUUID();
+      items.unshift({
+        id,
+        placa,
+        tipo: tipoSel,
+        notas: (notasEl.value || '').trim(),
+        entradaISO: new Date().toISOString()
+      });
+      save();
+      renderKpis();
+      renderList();
+
+      // reset UI + volver a auto
+      placaEl.value=''; notasEl.value='';
+      document.querySelectorAll('.vehicle-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelector('.vehicle-btn[data-tipo="auto"]').classList.add('active');
+      tipoSel = 'auto';
+
+      placaEl.focus();
+      toast('Vehículo ingresado');
+    }
+    btn.addEventListener('click', (e)=>{ e.preventDefault(); addEntrada(); });
+    placaEl.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); addEntrada(); } });
+
+    // ====== Init ======
+    renderKpis();
+    renderList();
+  </script>
+</body>
+</html>
