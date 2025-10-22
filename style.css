@@ -1,6 +1,6 @@
 /* ========= Variables / base ========= */
 :root{
-  --bg-start: #f1f2f4;   /* gris claro como en captura */
+  --bg-start: #f1f2f4;
   --bg-end:   #f1f2f4;
 
   --card-bg: #fff;
@@ -11,9 +11,10 @@
   --text-2: #4a4a4a;
   --muted:  #8a8a8a;
 
-  --accent:   #ff8a5b;
-  --accent-2: #ffb67f;
-  --accent-3: rgba(255,138,91,.18);
+  /* 🎨 Nueva paleta azul elegante */
+  --accent:   #1e3a8a;      /* azul marino profundo */
+  --accent-2: #3b82f6;      /* azul brillante moderno */
+  --accent-3: rgba(30,58,138,.18);  /* sombra azul suave */
 
   --green: #41a46a;
 
@@ -21,8 +22,8 @@
   --soft: #f8f9fa;
   --danger:#e74c3c; --danger-h:#c0392b;
 
-  --badge-bg: rgba(255,138,91,.12);
-  --badge-tx: #ff6d3a;
+  --badge-bg: rgba(30,58,138,.08);
+  --badge-tx: #1e3a8a;
 }
 
 *{ box-sizing: border-box; }
@@ -65,7 +66,7 @@ body{
 .kpi-row{
   display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
   padding: 18px;
-  background: #f1f2f4; /* igual al fondo de tu captura */
+  background: #f1f2f4;
 }
 .kpi-card{
   background:#fff; border: 1px solid var(--border);
@@ -126,8 +127,8 @@ body{
   flex:1; padding:10px 0; border:1.5px solid var(--border); border-radius:12px;
   background:transparent; font-size:22px; cursor:pointer; transition:.2s ease;
 }
-.vehicle-btn:hover{ border-color: var(--accent); background: rgba(255,138,91,.08); }
-.vehicle-btn.active{ border-color: var(--accent); box-shadow: 0 8px 20px rgba(255,138,91,.2); }
+.vehicle-btn:hover{ border-color: var(--accent); background: rgba(30,58,138,.08); }
+.vehicle-btn.active{ border-color: var(--accent); box-shadow: 0 8px 20px rgba(30,58,138,.2); }
 
 .btn-primary{
   width:100%; padding:12px 14px; border:none; border-radius:12px;
@@ -148,8 +149,8 @@ body{
   flex:1; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:1rem;
 }
 #searchInput:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-3); }
-.btn-chip{ padding:10px 12px; border-radius:999px; border:none; background:#ffb35a; color:#fff; font-weight:700; cursor:pointer; }
-.btn-chip:hover{ background:#ffa233; }
+.btn-chip{ padding:10px 12px; border-radius:999px; border:none; background:#3b82f6; color:#fff; font-weight:700; cursor:pointer; }
+.btn-chip:hover{ background:#2563eb; }
 
 .list{ list-style:none; margin:0; padding:0 0 60px 0; display:flex; flex-direction:column; gap:10px; }
 .list li{
