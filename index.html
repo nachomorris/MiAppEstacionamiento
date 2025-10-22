@@ -20,9 +20,59 @@
         </div>
       </header>
 
-      <!-- Layout 2 columnas (desktop) / 1 columna (mobile) -->
+      <!-- ===== KPI ROW ===== -->
+      <section class="kpi-row">
+        <!-- Espacios Totales -->
+        <article class="kpi-card">
+          <div class="kpi-head">
+            <h3 class="kpi-title">Espacios Totales</h3>
+            <!-- icono cuadrado con "P" -->
+            <span class="kpi-ico" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" fill="none" stroke="#222" stroke-width="1.6"/>
+                <path d="M9 16V8h4.2a3 3 0 1 1 0 6H11" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value" id="kpiTotalSpaces">50</div>
+          <div class="kpi-sub">Capacidad máxima</div>
+        </article>
+
+        <!-- Ocupados -->
+        <article class="kpi-card">
+          <div class="kpi-head">
+            <h3 class="kpi-title">Ocupados</h3>
+            <!-- flecha ↗ -->
+            <span class="kpi-ico" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24">
+                <path d="M7 17L17 7M9 7h8v8" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value" id="kpiOccupied">0</div>
+          <div class="kpi-sub"><span id="kpiOccPct">0%</span> ocupación</div>
+        </article>
+
+        <!-- Disponibles -->
+        <article class="kpi-card kpi-available">
+          <div class="kpi-head">
+            <h3 class="kpi-title">Disponibles</h3>
+            <!-- flecha ↙ en verde -->
+            <span class="kpi-ico" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24">
+                <path d="M17 7L7 17M15 17H7V9" fill="none" stroke="#41a46a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value kpi-value-green" id="kpiAvailable">50</div>
+          <div class="kpi-sub">Espacios libres</div>
+        </article>
+      </section>
+      <!-- ===== /KPI ROW ===== -->
+
+      <!-- Layout principal -->
       <main class="grid">
-        <!-- Panel de ingreso -->
+        <!-- Panel ingreso -->
         <section class="card form-card">
           <h2 class="card-title">Ingreso de vehículo</h2>
 
@@ -70,7 +120,7 @@
     </div>
   </div>
 
-  <!-- Modal de salida -->
+  <!-- Modal salida -->
   <div id="exitModal" class="modal" aria-hidden="true">
     <div class="modal-content">
       <button class="modal-close" id="closeModal" aria-label="Cerrar">×</button>
@@ -93,7 +143,26 @@
   <!-- Toast -->
   <div id="toast" class="toast"></div>
 
-  <!-- Enchufá tu lógica cuando quieras:
+  <!-- Ganchos simples para que se actualicen los KPIs con tu JS actual -->
+  <script>
+    // Cambiá esto a tu capacidad real
+    const TOTAL_SPACES = 50;
+
+    // Set inicial al cargar (por si no tenés JS aún)
+    document.getElementById('kpiTotalSpaces').textContent = TOTAL_SPACES;
+
+    // Esta función la podés llamar desde tu render() actual pasando el total ocupados
+    window.updateKPI = function(occupied){
+      const available = Math.max(0, TOTAL_SPACES - (occupied||0));
+      const pct = TOTAL_SPACES ? Math.round((occupied / TOTAL_SPACES) * 100) : 0;
+
+      document.getElementById('kpiOccupied').textContent   = occupied || 0;
+      document.getElementById('kpiAvailable').textContent  = available;
+      document.getElementById('kpiOccPct').textContent     = pct + '%';
+      document.getElementById('count').textContent         = occupied || 0; // badge lista
+    };
+  </script>
+  <!-- Conectá tu lógica cuando quieras:
        <script type="module" src="./firebase.js"></script>
        <script type="module" src="./app.js"></script>
   -->
